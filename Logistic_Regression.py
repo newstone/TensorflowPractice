@@ -1,6 +1,5 @@
 import tensorflow as tf
 import numpy as np
-import random as rd
 
 tf.set_random_seed(777)
 xy = np.genfromtxt('heart.csv', delimiter=',', dtype=np.float32,  encoding='UTF8')[:,:]
