@@ -64,9 +64,8 @@ W10 = tf.Variable(tf.random_normal([13, 1]))
 b10 = tf.Variable(tf.random_normal([1]))
 hypothesis =  tf.sigmoid(tf.matmul(L9, W10) + b10)
 
-cost = -tf.reduce_mean(Y * tf.log(hypothesis) + (1 - Y) *
-                       tf.log(1 - hypothesis))
-#cost = tf.nn.softmax_cross_entropy_with_logits_v2(logits=tf.clip_by_value(hypothesis,1e-10,1), labels = Y)
+#cost = -tf.reduce_mean(Y * tf.log(hypothesis) + (1 - Y) * tf.log(1 - hypothesis))
+cost = tf.nn.sigmoid_cross_entropy_with_logits(logits=hypothesis, labels = Y)
 
 optimizer = tf.train.AdamOptimizer(learning_rate=0.001).minimize(cost)
 
