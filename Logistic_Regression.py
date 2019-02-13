@@ -15,52 +15,45 @@ x_data[:,7] = (x_data[:,7] - x_data[:,7].mean())/x_data[:,7].std()
 X = tf.placeholder(tf.float32, shape=[None, 13])
 Y = tf.placeholder(tf.float32, shape=[None, 1])
 
-W1 = tf.get_variable("W1", shape=[13,13],
-                     initializer=tf.contrib.layers.xavier_initializer())
-b1 = tf.Variable(tf.random_normal([13]))
+0.89768976
+
+W1 = tf.get_variable("W1", shape=[13,12], initializer=tf.contrib.layers.xavier_initializer())
+b1 = tf.Variable(tf.random_normal([12]))
 L1 = tf.matmul(X, W1) + b1
 
-W2 = tf.get_variable("W2", shape=[13, 13],
-                     initializer=tf.contrib.layers.xavier_initializer())
-b2 = tf.Variable(tf.random_normal([13]))
+W2 = tf.get_variable("W2", shape=[12, 12], initializer=tf.contrib.layers.xavier_initializer())
+b2 = tf.Variable(tf.random_normal([12]))
 L2 = tf.matmul(L1, W2) + b2
 
-W3 = tf.get_variable("W3", shape=[13,13],
-                     initializer=tf.contrib.layers.xavier_initializer())
-b3 = tf.Variable(tf.random_normal([13]))
+W3 = tf.get_variable("W3", shape=[12,8], initializer=tf.contrib.layers.xavier_initializer())
+b3 = tf.Variable(tf.random_normal([8]))
 L3 = tf.matmul(L2, W3) + b3
 
-W4 = tf.get_variable("W4", shape=[13, 13],
-                     initializer=tf.contrib.layers.xavier_initializer())
-b4 = tf.Variable(tf.random_normal([13]))
+W4 = tf.get_variable("W4", shape=[8, 8], initializer=tf.contrib.layers.xavier_initializer())
+b4 = tf.Variable(tf.random_normal([8]))
 L4 = tf.matmul(L3, W4) + b4
 
-W5 = tf.get_variable("W5", shape=[13, 13],
-                     initializer=tf.contrib.layers.xavier_initializer())
-b5 = tf.Variable(tf.random_normal([13]))
+W5 = tf.get_variable("W5", shape=[8, 8], initializer=tf.contrib.layers.xavier_initializer())
+b5 = tf.Variable(tf.random_normal([8]))
 L5 = tf.matmul(L4, W5) + b5
 
-W6 = tf.get_variable("W6", shape=[13, 13],
-                     initializer=tf.contrib.layers.xavier_initializer())
-b6 = tf.Variable(tf.random_normal([13]))
+W6 = tf.get_variable("W6", shape=[8, 4], initializer=tf.contrib.layers.xavier_initializer())
+b6 = tf.Variable(tf.random_normal([4]))
 L6 = tf.matmul(L5, W6) + b6
 
-W7 = tf.get_variable("W7", shape=[13, 13],
-                     initializer=tf.contrib.layers.xavier_initializer())
-b7 = tf.Variable(tf.random_normal([13]))
+W7 = tf.get_variable("W7", shape=[4, 4], initializer=tf.contrib.layers.xavier_initializer())
+b7 = tf.Variable(tf.random_normal([4]))
 L7 = tf.matmul(L6, W7) + b7
 
-W8 = tf.get_variable("W8", shape=[13, 13],
-                     initializer=tf.contrib.layers.xavier_initializer())
-b8 = tf.Variable(tf.random_normal([13]))
+W8 = tf.get_variable("W8", shape=[4, 4], initializer=tf.contrib.layers.xavier_initializer())
+b8 = tf.Variable(tf.random_normal([4]))
 L8 = tf.matmul(L7, W8) + b8
 
-W9 = tf.get_variable("W9", shape=[13, 13],
-                     initializer=tf.contrib.layers.xavier_initializer())
-b9 = tf.Variable(tf.random_normal([13]))
+W9 = tf.get_variable("W9", shape=[4, 4], initializer=tf.contrib.layers.xavier_initializer())
+b9 = tf.Variable(tf.random_normal([4]))
 L9 = tf.matmul(L8, W9) + b9
 
-W10 = tf.Variable(tf.random_normal([13, 1]))
+W10 = tf.Variable(tf.random_normal([4, 1]))
 b10 = tf.Variable(tf.random_normal([1]))
 hypothesis =  tf.sigmoid(tf.matmul(L9, W10) + b10)
 
