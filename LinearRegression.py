@@ -43,17 +43,17 @@ W4 = tf.get_variable("W4", shape=[4, 4], initializer=tf.contrib.layers.xavier_in
 b4 = tf.Variable(tf.random_normal([4]))
 L4 = tf.matmul(L3, W4) + b4
 
-W16 = tf.get_variable("W16", shape=[4, 4], initializer=tf.contrib.layers.xavier_initializer())
-b16 = tf.Variable(tf.random_normal([4]))
+W16 = tf.get_variable("W16", shape=[4, 8], initializer=tf.contrib.layers.xavier_initializer())
+b16 = tf.Variable(tf.random_normal([8]))
 L16 = tf.matmul(L4, W16) + b16
 
 
-W17 = tf.get_variable("W17", shape=[4, 4], initializer=tf.contrib.layers.xavier_initializer())
-b17 = tf.Variable(tf.random_normal([4]))
+W17 = tf.get_variable("W17", shape=[8, 8], initializer=tf.contrib.layers.xavier_initializer())
+b17 = tf.Variable(tf.random_normal([8]))
 L17 = tf.matmul(L16, W17) + b17
 
 
-W18 = tf.get_variable("W18", shape=[4, 4], initializer=tf.contrib.layers.xavier_initializer())
+W18 = tf.get_variable("W18", shape=[8, 4], initializer=tf.contrib.layers.xavier_initializer())
 b18 = tf.Variable(tf.random_normal([4]))
 L18 = tf.matmul(L17, W18) + b18
 
@@ -73,7 +73,7 @@ optimizer = tf.train.AdamOptimizer(learning_rate=0.0001).minimize(cost)
 sess = tf.Session()
 sess.run(tf.global_variables_initializer())
 
-for step in range(10001):
+for step in range(3001):
     _, cost_val = sess.run([optimizer, cost], feed_dict={X: x_train, Y: y_train})
     if step % 100 == 0:
         print("Step:" ,step, "\tCost:", cost_val)
@@ -85,5 +85,17 @@ yy[:] *= y_std
 h[:] += y_mean
 yy[:] += y_mean
 
+result = abs(h[:]-yy[:])
+
+max = 0
+min = 1e+10
+
 for i in range(h.shape[0]):
-    print("예측한 값: ", h[i], "   실제 값: ",yy[i], "    두 값의 차: ", h[i]-yy[i])
+    if max < result[i]:
+        max = result[i]
+    elif min > result[i]:
+        min = result[i]
+
+    print("예측한 값: ", h[i], "   실제 값: ",yy[i], "    두 값의 차: ", result[i])
+
+print("최소값: ", min, "최대값: ", max, "오차 평균: ", result.mean())
