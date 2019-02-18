@@ -1,21 +1,36 @@
 import tensorflow as tf
 import numpy as np
+import pandas as pd
 
-tf.set_random_seed(333)
-xy = np.genfromtxt('heart.csv', delimiter=',', dtype=np.float32,  encoding='UTF8')[:,:]
+tf.set_random_seed(777)
+df = pd.read_csv('heart.csv')
+#xy = np.genfromtxt('heart.csv', delimiter=',', dtype=np.float32,  encoding='UTF8')[:,:]
 
-x_data = xy[1:, 0:-1]
-y_data = xy[1:, [-1]]
+msk = np.random.rand(len(df)) < 0.8
 
-x_data[:,0] = (x_data[:,0] - x_data[:,0].mean())/x_data[:,0].std()
-x_data[:,3] = (x_data[:,3] - x_data[:,3].mean())/x_data[:,3].std()
-x_data[:,4] = (x_data[:,4] - x_data[:,4].mean())/x_data[:,4].std()
-x_data[:,7] = (x_data[:,7] - x_data[:,7].mean())/x_data[:,7].std()
+train_data = df[msk]
+test_data = df[~msk]
+
+x_train_data = train_data.iloc[:, 0:-1].values
+y_train_data = train_data['target'].values
+y_train_data = y_train_data.reshape([-1, 1])
+
+x_train_data[:,0] = (x_train_data[:,0] - x_train_data[:,0].mean())/x_train_data[:,0].std()
+x_train_data[:,3] = (x_train_data[:,3] - x_train_data[:,3].mean())/x_train_data[:,3].std()
+x_train_data[:,4] = (x_train_data[:,4] - x_train_data[:,4].mean())/x_train_data[:,4].std()
+x_train_data[:,7] = (x_train_data[:,7] - x_train_data[:,7].mean())/x_train_data[:,7].std()
+
+x_test_data = test_data.iloc[:, 0:-1].values
+y_test_data = test_data['target'].values
+y_test_data = y_test_data.reshape([-1, 1])
+
+x_test_data[:,0] = (x_test_data[:,0] - x_test_data[:,0].mean())/x_test_data[:,0].std()
+x_test_data[:,3] = (x_test_data[:,3] - x_test_data[:,3].mean())/x_test_data[:,3].std()
+x_test_data[:,4] = (x_test_data[:,4] - x_test_data[:,4].mean())/x_test_data[:,4].std()
+x_test_data[:,7] = (x_test_data[:,7] - x_test_data[:,7].mean())/x_test_data[:,7].std()
 
 X = tf.placeholder(tf.float32, shape=[None, 13])
 Y = tf.placeholder(tf.float32, shape=[None, 1])
-
-0.89768976
 
 W1 = tf.get_variable("W1", shape=[13,12], initializer=tf.contrib.layers.xavier_initializer())
 b1 = tf.Variable(tf.random_normal([12]))
@@ -64,14 +79,18 @@ optimizer = tf.train.AdamOptimizer(learning_rate=0.001).minimize(cost)
 
 predicted = tf.cast(hypothesis > 0.5, dtype=tf.float32)
 accuracy = tf.reduce_mean(tf.cast(tf.equal(predicted, Y), dtype=tf.float32))
-#tf.clip_by_value(hypothesis,1e-10,1.0)
+
 sess = tf.Session()
 sess.run(tf.global_variables_initializer())
 
-for step in range(2001):
-    _, cost_val = sess.run([optimizer, cost], feed_dict={X: x_data, Y: y_data})
+for step in range(3001):
+    _, cost_val = sess.run([optimizer, cost], feed_dict={X: x_train_data, Y: y_train_data})
     if step % 100 == 0:
-        print("Step:" ,step, "\tCost:", cost_val)
+        print("Step:" ,step, "\tCost:", cost_val[0])
 
-h, c, a = sess.run([hypothesis, predicted, accuracy], feed_dict={X: x_data, Y: y_data})
-print("\nHypothesis: ", h, "\nCorrect (Y): ", c, "\nAccuracy: ", a)
+_, c, a = sess.run([hypothesis, predicted, accuracy], feed_dict={X: x_test_data, Y: y_test_data})
+
+for i in range(c.shape[0]):
+    print("\nHypothesis: ", c[i], "\tCorrect (Y): ", y_test_data[i], "\t ", y_test_data[i] == c[i])
+
+print("\nAccuracy: ", a)
